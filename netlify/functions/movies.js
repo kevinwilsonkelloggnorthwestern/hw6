@@ -7,7 +7,7 @@ let fs = require('fs')
 // defines a lambda function
 exports.handler = async function(event) {
   // write the event object to the back-end console
-  console.log(event)
+  //console.log(event)
 
   // read movies CSV file from disk
   let moviesFile = fs.readFileSync(`./movies.csv`)
@@ -16,7 +16,6 @@ exports.handler = async function(event) {
   let moviesFromCsv = await csv(moviesFile)
 
   // write the movies to the back-end console, check it out
-  console.log(moviesFromCsv)
 
   // 🔥 hw6: your recipe and code starts here!
   let year = event.queryStringParameters.year
@@ -35,13 +34,31 @@ exports.handler = async function(event) {
     }
 
     for (let i=0; i < moviesFromCsv.length; i++) {
+// loop through the CSV data, if the year matches the items year
+// and genre is in the genre name, create an object and push it to the movies array
 
-    }
+let moviePost = moviesFromCsv[i]
+if(moviesFromCsv[i].startYear == year && moviesFromCsv[i].genres.includes(genre) ){
+returnValue.numResults = returnValue.numResults + 1
+
+//create movies array
+let movieObject = {
+  movieTitle: moviePost.primaryTitle,
+  movieYear: year,
+  movieGenre: moviePost.genres
+}
+
+//push object into array
+returnValue.movies.push(movieObject)
+
+}  
+
+}
 
     // a lambda function returns a status code and a string of data
     return {
       statusCode: 200, // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-      body: `Hello from the back-end!` // a string of data
+      body: JSON.stringify(returnValue) // a string of data
     }
   }
 }
